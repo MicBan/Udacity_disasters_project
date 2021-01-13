@@ -3,12 +3,42 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    Function putting together data in csv folder, combining them and returning as pandas dataframe
+
+    Parameters
+    ----------
+    messages_filepath : string
+        Path to csv file with messages
+    categories_filepath : string
+        Path to csv file with categories
+
+    Returns
+    -------
+    df : pandas dataframe
+        Pandas datafram consising combined data from csv files
+
+    '''
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     df = messages.merge(categories,on = 'id')
     return df
 
 def clean_data(df):
+    '''
+    Function cleaning the provided dataframe
+
+    Parameters
+    ----------
+    df : pandas dataframe
+        Dataframe to be cleaned
+
+    Returns
+    -------
+    df : pandas dataframe
+        Cleaned dataframe
+
+    '''
     categories = df.categories.str.split(';',expand=True)
     row = categories.iloc[0]
     category_colnames = list(row.str.split('-',expand=True)[0])
@@ -23,12 +53,29 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
-    #engine = create_engine('sqlite:///database_messages.db')
+    '''
+    Function saving dataframe to the database
+
+    Parameters
+    ----------
+    df : pandas dataframe
+        Dataframe to be saved.
+    database_filename : string
+        Name of the database.
+
+    Returns
+    -------
+    None.
+
+    '''
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('messages', engine, index=False,if_exists='replace')  
 
 
 def main():
+    '''
+    Function running other functions in a correct order.
+    '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]

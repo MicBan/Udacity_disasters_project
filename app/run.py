@@ -16,6 +16,20 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 def tokenize(text):
+    '''
+    Function cleaning provided text
+
+    Parameters
+    ----------
+    text : string
+        Text to be tokenised.
+
+    Returns
+    -------
+    clean_tokens : list
+        List of tokens.
+
+    '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -39,6 +53,11 @@ model = joblib.load("models/classifier.pkl")
 @app.route('/')
 @app.route('/index')
 def index():
+    '''
+    Function creating the main page of the webapp together with required analyses and charts
+    
+    Returns: Webapp template
+    '''
     
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
@@ -102,6 +121,12 @@ def index():
 # web page that handles user query and displays model results
 @app.route('/go')
 def go():
+    '''
+    Function creating the page of the webapp showing results of ML model application of user defined text
+    
+    Returns: Webapp template
+
+    '''
     # save user input in query
     query = request.args.get('query', '') 
 
